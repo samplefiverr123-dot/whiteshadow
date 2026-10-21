@@ -248,7 +248,7 @@ function SecretCodePage() {
               },
               {
                 title: "Swap the digits",
-                body: "Every 0 becomes an underscore (_) and every 1 becomes a dot (.) — A becomes ___ .",
+                body: "Every 0 becomes an underscore (_) and every 1 becomes a dot (.) — A becomes ___.",
               },
             ].map((step, index) => (
               <li
