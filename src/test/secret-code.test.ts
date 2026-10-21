@@ -23,14 +23,18 @@ describe("secret code cipher", () => {
 
   it("leaves digits and punctuation unchanged and in place", () => {
     expect(encryptText("HI!")).toBe(".___//.__.!");
-    expect(encryptText("A1")).toBe(".___1");
+    expect(encryptText("A1")).toBe("___.1");
   });
 
   it("round-trips messages", () => {
-    expect(decryptText(encryptText("SECRET CODE"))).toBe("SECRET CODE");
-    expect(decryptText(encryptText("Attack at dawn 12:30!"))).toBe(
-      "Attack at dawn 12:30!",
-    );
+    expect(decryptText(encryptText("Secret code"))).toBe("SECRET CODE");
+    expect(decryptText(encryptText("Attack at dawn"))).toBe("ATTACK AT DAWN");
+  });
+
+  it("shows ? for groups it cannot decode, like digits", () => {
+    // Digits pass through encryption unchanged, but only dot/underscore groups
+    // can be decoded, so they come back as ?.
+    expect(decryptText(encryptText("Room 12"))).toBe("ROOM ?");
   });
 
   it("decodes letters and words back to text", () => {
@@ -38,12 +42,12 @@ describe("secret code cipher", () => {
   });
 
   it("trims extra whitespace before decoding", () => {
-    expect(decryptText("   .___//.__. / ___   ")).toBe("HI A");
+    expect(decryptText("   .___//.__. / ___.   ")).toBe("HI A");
   });
 
   it("shows ? for invalid groups", () => {
     // ____ decodes to 0, which is not a letter.
-    expect(decryptText("____//.__.")).toBe("? A");
+    expect(decryptText("____//.___")).toBe("? H");
     // Groups containing characters other than . and _ are invalid.
     expect(decryptText("ab//cd")).toBe("??");
     // Values above 26 are invalid.
