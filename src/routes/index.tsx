@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 
 import { decryptText, encryptText } from "@/lib/secret-code";
 
@@ -25,9 +25,10 @@ export const Route = createFileRoute("/")({
   component: SecretCodePage,
 });
 
-type Mode = "encrypt" | "decrypt";
+type Mode = "encrypt" | "decrypt" | "reference";
 
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+const REFERENCE_PASSWORD = "whiteshadow";
 
 function buildReference() {
   return ALPHABET.map((letter) => {
@@ -79,6 +80,9 @@ function SecretCodePage() {
   const [mode, setMode] = useState<Mode>("encrypt");
   const [input, setInput] = useState("");
   const [copied, setCopied] = useState(false);
+  const [referenceUnlocked, setReferenceUnlocked] = useState(false);
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
 
   const output = useMemo(
     () => (mode === "encrypt" ? encryptText(input) : decryptText(input)),
@@ -107,6 +111,23 @@ function SecretCodePage() {
     setMode(mode === "encrypt" ? "decrypt" : "encrypt");
   }
 
+  function tryUnlock(event: FormEvent) {
+    event.preventDefault();
+    if (password.trim().toLowerCase() === REFERENCE_PASSWORD) {
+      setReferenceUnlocked(true);
+      setPassword("");
+      setPasswordError(false);
+    } else {
+      setPasswordError(true);
+    }
+  }
+
+  function lockReference() {
+    setReferenceUnlocked(false);
+    setPassword("");
+    setPasswordError(false);
+  }
+
   return (
     <div className="min-h-screen">
       <main className="mx-auto flex w-full max-w-3xl flex-col gap-12 px-4 py-10 sm:py-14">
@@ -128,27 +149,39 @@ function SecretCodePage() {
           <div
             role="tablist"
             aria-label="Mode"
-            className="grid grid-cols-2 gap-1 rounded-xl border border-border bg-card p-1"
+            className="grid grid-cols-3 gap-1 rounded-xl border border-border bg-card p-1"
           >
-            {(["encrypt", "decrypt"] as const).map((value) => (
+            {(
+              [
+                { value: "encrypt", label: "Encrypt" },
+                { value: "decrypt", label: "Decrypt" },
+                { value: "reference", label: "Reference" },
+              ] as const
+            ).map(({ value, label }) => (
               <button
                 key={value}
                 role="tab"
                 aria-selected={mode === value}
-                onClick={() => setMode(value)}
+                onClick={() => {
+                  setMode(value);
+                  if (value !== "reference") {
+                    setPassword("");
+                    setPasswordError(false);
+                  }
+                }}
                 className={
                   mode === value
                     ? "rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors"
                     : "rounded-lg px-4 py-2.5 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground"
                 }
               >
-                {value === "encrypt" ? "Encrypt" : "Decrypt"}
+                {label}
               </button>
             ))}
           </div>
 
+          {mode !== "reference" && (
           <div className="flex flex-col gap-2">
-            <label htmlFor="secret-input" className="text-sm font-medium text-foreground">
               {mode === "encrypt" ? "Your message" : "Your secret code"}
             </label>
             <textarea
