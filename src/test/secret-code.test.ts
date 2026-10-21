@@ -47,7 +47,7 @@ describe("secret code cipher", () => {
 
   it("shows ? for invalid groups", () => {
     // ____ decodes to 0, which is not a letter.
-    expect(decryptText("____//.___")).toBe("? H");
+    expect(decryptText("____/.___")).toBe("? H");
     // Groups containing characters other than . and _ are invalid.
     expect(decryptText("ab//cd")).toBe("??");
     // Values above 26 are invalid.
