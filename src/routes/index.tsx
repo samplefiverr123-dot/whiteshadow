@@ -181,7 +181,9 @@ function SecretCodePage() {
           </div>
 
           {mode !== "reference" && (
+          <>
           <div className="flex flex-col gap-2">
+            <label htmlFor="secret-input" className="text-sm font-medium text-foreground">
               {mode === "encrypt" ? "Your message" : "Your secret code"}
             </label>
             <textarea
@@ -234,33 +236,77 @@ function SecretCodePage() {
               Swap ⇄
             </button>
           </div>
+          </>
+          )}
+
+          {mode === "reference" &&
+            (referenceUnlocked ? (
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <h2 className="text-xl font-semibold tracking-tight text-foreground">
+                      Cipher reference
+                    </h2>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      Every letter, its alphabet number, binary, and final code.
+                    </p>
+                  </div>
+                  <button onClick={lockReference} className={secondaryButton}>
+                    Lock
+                  </button>
+                </div>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                  {reference.map((row) => (
+                    <div
+                      key={row.letter}
+                      className="flex items-center justify-between gap-3 rounded-lg border border-border bg-card px-3 py-2"
+                    >
+                      <span className="w-6 text-lg font-semibold text-foreground">
+                        {row.letter}
+                      </span>
+                      <span className="w-7 text-right text-sm text-muted-foreground">
+                        {row.position}
+                      </span>
+                      <span className="font-mono text-sm text-muted-foreground">{row.binary}</span>
+                      <span className="font-mono text-base text-accent">{row.code}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <form
+                onSubmit={tryUnlock}
+                className="flex flex-col gap-4 rounded-xl border border-border bg-card p-6"
+              >
+                <div>
+                  <h2 className="text-lg font-semibold text-foreground">Locked reference</h2>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Enter the password to view the cipher reference.
+                  </p>
+                </div>
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(event) => {
+                      setPassword(event.target.value);
+                      setPasswordError(false);
+                    }}
+                    placeholder="Password"
+                    aria-label="Reference password"
+                    className="w-full flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-ring focus:ring-2 focus:ring-ring/30"
+                  />
+                  <button type="submit" className={primaryButton}>
+                    Unlock
+                  </button>
+                </div>
+                {passwordError && (
+                  <p className="text-sm text-destructive">Wrong password — try again.</p>
+                )}
+              </form>
+            ))}
         </section>
 
-        <section className="flex flex-col gap-4">
-          <div>
-            <h2 className="text-xl font-semibold tracking-tight text-foreground">
-              Cipher reference
-            </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Every letter, its alphabet number, binary, and final code.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {reference.map((row) => (
-              <div
-                key={row.letter}
-                className="flex items-center justify-between gap-3 rounded-lg border border-border bg-card px-3 py-2"
-              >
-                <span className="w-6 text-lg font-semibold text-foreground">{row.letter}</span>
-                <span className="w-7 text-right text-sm text-muted-foreground">
-                  {row.position}
-                </span>
-                <span className="font-mono text-sm text-muted-foreground">{row.binary}</span>
-                <span className="font-mono text-base text-accent">{row.code}</span>
-              </div>
-            ))}
-          </div>
-        </section>
 
         <section className="flex flex-col gap-4">
           <div>
