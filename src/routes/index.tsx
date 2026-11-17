@@ -272,6 +272,55 @@ function SecretCodePage() {
                     </div>
                   ))}
                 </div>
+                <section className="flex flex-col gap-4">
+                  <div>
+                    <h2 className="text-xl font-semibold tracking-tight text-foreground">How it works</h2>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      Three simple steps turn any letter into a code.
+                    </p>
+                  </div>
+                  <ol className="flex flex-col gap-3">
+                    {[
+                      {
+                        title: "Number it",
+                        body: "Each letter becomes its alphabet position: A = 1, B = 2, … Z = 26.",
+                      },
+                      {
+                        title: "Make it binary",
+                        body: "That number becomes binary, padded to at least 4 digits — so A = 0001.",
+                      },
+                      {
+                        title: "Swap the digits",
+                        body: "Every 0 becomes an underscore (_) and every 1 becomes a dot (.) — A becomes ___.",
+                      },
+                    ].map((step, index) => (
+                      <li
+                        key={step.title}
+                        className="flex gap-4 rounded-xl border border-border bg-card p-4"
+                      >
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">
+                          {index + 1}
+                        </span>
+                        <div>
+                          <p className="font-semibold text-foreground">{step.title}</p>
+                          <p className="mt-1 text-sm text-muted-foreground">{step.body}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ol>
+                  <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4">
+                    <p className="text-sm text-muted-foreground">
+                      For example, encrypting <span className="font-semibold text-foreground">HI A</span>{" "}
+                      gives:
+                    </p>
+                    <p className="font-mono text-lg text-accent">.___//.__./___.</p>
+                    <p className="text-sm text-muted-foreground">
+                      <span className="font-mono text-foreground">//</span> separates letters ·{" "}
+                      <span className="font-mono text-foreground">/</span> separates words · digits and
+                      punctuation stay exactly where they are.
+                    </p>
+                  </div>
+                </section>
               </div>
             ) : (
               <form
@@ -307,56 +356,6 @@ function SecretCodePage() {
             ))}
         </section>
 
-
-        <section className="flex flex-col gap-4">
-          <div>
-            <h2 className="text-xl font-semibold tracking-tight text-foreground">How it works</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Three simple steps turn any letter into a code.
-            </p>
-          </div>
-          <ol className="flex flex-col gap-3">
-            {[
-              {
-                title: "Number it",
-                body: "Each letter becomes its alphabet position: A = 1, B = 2, … Z = 26.",
-              },
-              {
-                title: "Make it binary",
-                body: "That number becomes binary, padded to at least 4 digits — so A = 0001.",
-              },
-              {
-                title: "Swap the digits",
-                body: "Every 0 becomes an underscore (_) and every 1 becomes a dot (.) — A becomes ___.",
-              },
-            ].map((step, index) => (
-              <li
-                key={step.title}
-                className="flex gap-4 rounded-xl border border-border bg-card p-4"
-              >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">
-                  {index + 1}
-                </span>
-                <div>
-                  <p className="font-semibold text-foreground">{step.title}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">{step.body}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-          <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4">
-            <p className="text-sm text-muted-foreground">
-              For example, encrypting <span className="font-semibold text-foreground">HI A</span>{" "}
-              gives:
-            </p>
-            <p className="font-mono text-lg text-accent">.___//.__./___.</p>
-            <p className="text-sm text-muted-foreground">
-              <span className="font-mono text-foreground">//</span> separates letters ·{" "}
-              <span className="font-mono text-foreground">/</span> separates words · digits and
-              punctuation stay exactly where they are.
-            </p>
-          </div>
-        </section>
 
         <footer className="text-center text-xs text-muted-foreground">
           Everything runs right in your browser — nothing is stored or sent anywhere.
